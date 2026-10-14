@@ -20,9 +20,12 @@ public class LoginTest extends BaseTest {
 
         wait.until(ExpectedConditions.urlContains("inventory.html"));
 
+        String currentUrl = driver.getCurrentUrl();
+
+        Assert.assertNotNull(currentUrl, "Current URL should not be null");
         Assert.assertTrue(
-                driver.getCurrentUrl().contains("inventory.html"),
-                "Login failed: Products page was not opened."
+                currentUrl.contains("inventory.html"),
+                "User should be redirected to the inventory page"
         );
     }
 }
