@@ -10,6 +10,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +23,9 @@ public class BaseTest {
 
     protected WebDriver driver;
     protected ExtentTest extentTest;
-
+    protected WebDriverWait getWait() {
+        return new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
     private static final ExtentReports extent =
             ExtentManager.getInstance();
 

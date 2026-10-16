@@ -2,7 +2,9 @@ package com.vedansh.qa;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
 public class LoginPage {
 
     private final WebDriver driver;
@@ -20,4 +22,17 @@ public class LoginPage {
         driver.findElement(passwordField).sendKeys(password);
         driver.findElement(loginButton).click();
     }
+    public String getErrorMessage() {
+        WebDriverWait wait = new WebDriverWait(
+                driver, Duration.ofSeconds(10)
+        );
+
+        return wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector("[data-test='error']")
+                )
+        ).getText();
+    }
+
+
 }
