@@ -11,6 +11,7 @@ public class LoginTest extends BaseTest {
 
     @Test
     public void validLoginTest() {
+
         LoginPage loginPage = new LoginPage(driver);
 
         extentTest.info("Entering valid username and password");
@@ -21,7 +22,13 @@ public class LoginTest extends BaseTest {
                 new WebDriverWait(driver, Duration.ofSeconds(10));
 
         wait.until(ExpectedConditions.urlContains("inventory.html"));
-
+        ProductsPage productsPage = new ProductsPage(driver);
+        extentTest.info("Verifying Products page heading");
+        Assert.assertEquals(
+                productsPage.getPageTitle(),
+                "Products",
+                "Products page heading should be displayed"
+        );
         extentTest.info("Verifying successful login");
         String currentUrl = driver.getCurrentUrl();
 
@@ -30,6 +37,7 @@ public class LoginTest extends BaseTest {
                 currentUrl.contains("inventory.html"),
                 "User should be redirected to the inventory page"
         );
+
     }
     @Test
     public void invalidLoginTest() {
