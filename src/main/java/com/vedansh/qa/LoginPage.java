@@ -8,13 +8,14 @@ import java.time.Duration;
 public class LoginPage {
 
     private final WebDriver driver;
-
+    private final WaitUtils waitUtils;
     private final By usernameField = By.id("user-name");
     private final By passwordField = By.id("password");
     private final By loginButton = By.id("login-button");
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
+        this.waitUtils = new WaitUtils(driver);
     }
 
     public void login(String username, String password) {
@@ -23,14 +24,8 @@ public class LoginPage {
         driver.findElement(loginButton).click();
     }
     public String getErrorMessage() {
-        WebDriverWait wait = new WebDriverWait(
-                driver, Duration.ofSeconds(10)
-        );
-
-        return wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.cssSelector("[data-test='error']")
-                )
+        return waitUtils.waitForVisibility(
+                By.cssSelector("[data-test='error']")
         ).getText();
     }
 
