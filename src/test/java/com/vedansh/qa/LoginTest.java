@@ -1,5 +1,6 @@
 package com.vedansh.qa;
 
+
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -53,7 +54,5 @@ public class LoginTest extends BaseTest {
                 ),
                 "Expected an error message for invalid credentials"
         );
-
     }
-
 }
