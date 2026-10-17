@@ -19,9 +19,9 @@ public class LoginPage {
     }
 
     public void login(String username, String password) {
-        driver.findElement(usernameField).sendKeys(username);
-        driver.findElement(passwordField).sendKeys(password);
-        driver.findElement(loginButton).click();
+        waitUtils.waitForVisibility(usernameField).sendKeys(username);
+        waitUtils.waitForVisibility(passwordField).sendKeys(password);
+        waitUtils.waitForVisibility(loginButton).click();
     }
     public String getErrorMessage() {
         return waitUtils.waitForVisibility(
