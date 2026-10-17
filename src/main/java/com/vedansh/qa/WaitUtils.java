@@ -25,4 +25,9 @@ public class WaitUtils {
                 ExpectedConditions.visibilityOfElementLocated(locator)
         );
     }
+    public WebElement waitForClickability(By locator) {
+        return wait.until(
+                ExpectedConditions.elementToBeClickable(locator)
+        );
+    }
 }

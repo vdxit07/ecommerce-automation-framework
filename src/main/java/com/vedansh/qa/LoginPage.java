@@ -21,7 +21,8 @@ public class LoginPage {
     public void login(String username, String password) {
         waitUtils.waitForVisibility(usernameField).sendKeys(username);
         waitUtils.waitForVisibility(passwordField).sendKeys(password);
-        waitUtils.waitForVisibility(loginButton).click();
+        waitUtils.waitForClickability(loginButton).click();
+
     }
     public String getErrorMessage() {
         return waitUtils.waitForVisibility(
