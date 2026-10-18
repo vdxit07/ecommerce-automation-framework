@@ -40,7 +40,13 @@ public class InventoryPage {
         Select select = new Select(dropdown);
         select.selectByValue("lohi");
     }
+    public void sortByPriceHighToLow() {
+        WebElement dropdown =
+                waitUtils.waitForVisibility(sortDropdown);
 
+        Select select = new Select(dropdown);
+        select.selectByValue("hilo");
+    }
     public List<Double> getProductPrices() {
         List<WebElement> priceElements =
                 driver.findElements(
