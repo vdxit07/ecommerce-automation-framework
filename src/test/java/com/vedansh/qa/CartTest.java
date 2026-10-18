@@ -99,8 +99,10 @@ public class CartTest extends BaseTest {
                 "Cart should contain the backpack before removal."
         );
 
+        // Remove the backpack using the CartPage method.
         cartPage.removeBackpackFromCart();
 
+        // Wait until the cart item disappears.
         wait.until(
                 ExpectedConditions.invisibilityOfElementLocated(
                         By.className("cart_item")

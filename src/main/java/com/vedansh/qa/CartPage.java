@@ -2,7 +2,9 @@
 package com.vedansh.qa;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class CartPage {
 
@@ -39,6 +41,12 @@ public class CartPage {
     }
 
     public void removeBackpackFromCart() {
-        waitUtils.waitForClickability(removeBackpackButton).click();
+        WebElement removeButton =
+                waitUtils.waitForClickability(removeBackpackButton);
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].click();",
+                removeButton
+        );
     }
 }

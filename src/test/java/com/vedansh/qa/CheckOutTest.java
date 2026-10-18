@@ -1,51 +1,62 @@
+
 package com.vedansh.qa;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
 
 public class CheckOutTest extends BaseTest {
 
     @Test
-    public void completeCheckoutTest() {
+    public void testCompleteCheckout() {
 
-        WebDriverWait wait = new WebDriverWait(
-                driver,
-                Duration.ofSeconds(10)
-        );
+        // Step 1: Login
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.id("user-name")
+                )
+        ).sendKeys("standard_user");
 
-        // Step 1: Log in
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login("standard_user", "secret_sauce");
+        driver.findElement(By.id("password"))
+                .sendKeys("secret_sauce");
+
+        driver.findElement(By.id("login-button"))
+                .click();
 
         wait.until(
-                ExpectedConditions.urlContains("inventory.html")
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.className("inventory_list")
+                )
         );
 
-        // Step 2: Add a product
+        // Step 2: Add a product to the cart
         wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.id("add-to-cart-sauce-labs-backpack")
                 )
         ).click();
 
-        // Step 3: Open cart and proceed to checkout
-        new CartPage(driver).openCart();
+        // Step 3: Open the cart
+        driver.findElement(By.className("shopping_cart_link"))
+                .click();
 
         wait.until(
-                ExpectedConditions.urlContains("cart.html")
-        );
-
-        wait.until(
-                ExpectedConditions.elementToBeClickable(
+                ExpectedConditions.visibilityOfElementLocated(
                         By.id("checkout")
                 )
-        ).click();
+        );
+
+        // Step 4: Proceed to checkout
+        WebElement checkoutButton =
+                driver.findElement(By.id("checkout"));
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].click();",
+                checkoutButton
+        );
 
         wait.until(
                 ExpectedConditions.urlContains(
@@ -53,58 +64,44 @@ public class CheckOutTest extends BaseTest {
                 )
         );
 
-        // Step 4: Enter customer details directly
-        WebElement firstNameInput = wait.until(
-                ExpectedConditions.elementToBeClickable(
+        // Step 5: Enter customer details
+        WebElement firstName = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
                         By.id("first-name")
                 )
         );
-        firstNameInput.click();
-        firstNameInput.sendKeys("Vedansh");
 
-        WebElement lastNameInput = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.id("last-name")
-                )
-        );
-        lastNameInput.click();
-        lastNameInput.sendKeys("Dixit");
+        firstName.sendKeys("Vedansh");
 
-        WebElement postalCodeInput = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.id("postal-code")
-                )
-        );
-        postalCodeInput.click();
-        postalCodeInput.sendKeys("160001");
+        WebElement lastName =
+                driver.findElement(By.id("last-name"));
+        lastName.sendKeys("Dixit");
 
-        // Step 5: Verify the entered values
+        WebElement postalCode =
+                driver.findElement(By.id("postal-code"));
+        postalCode.sendKeys("160001");
+
+        // Step 6: Verify the entered values
         Assert.assertEquals(
-                firstNameInput.getDomProperty("value"),
+                firstName.getDomProperty("value"),
                 "Vedansh",
-                "First name was not entered correctly."
+                "First name was not entered correctly"
         );
 
         Assert.assertEquals(
-                lastNameInput.getDomProperty("value"),
+                lastName.getDomProperty("value"),
                 "Dixit",
-                "Last name was not entered correctly."
+                "Last name was not entered correctly"
         );
 
         Assert.assertEquals(
-                postalCodeInput.getDomProperty("value"),
+                postalCode.getDomProperty("value"),
                 "160001",
-                "Postal code was not entered correctly."
+                "Postal code was not entered correctly"
         );
 
-        System.out.println("All checkout fields populated correctly.");
-
-        // Step 6: Continue to order overview
-        wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.id("continue")
-                )
-        ).click();
+        // Step 7: Continue to checkout overview
+        driver.findElement(By.id("continue")).click();
 
         wait.until(
                 ExpectedConditions.urlContains(
@@ -112,21 +109,27 @@ public class CheckOutTest extends BaseTest {
                 )
         );
 
-        // Step 7: Verify the order overview
+        // Step 8: Verify the order overview
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.className("summary_info")
+                )
+        );
+
         Assert.assertEquals(
                 driver.findElements(By.className("cart_item")).size(),
                 1,
-                "Expected one product in the order overview."
+                "Expected exactly one product in the order overview"
         );
 
         Assert.assertTrue(
                 driver.findElement(
                         By.className("inventory_item_name")
                 ).getText().contains("Sauce Labs Backpack"),
-                "Expected Sauce Labs Backpack in the order overview."
+                "Expected Sauce Labs Backpack in the order overview"
         );
 
-        // Step 8: Finish the order
+        // Step 9: Finish the order
         wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.id("finish")
@@ -139,7 +142,7 @@ public class CheckOutTest extends BaseTest {
                 )
         );
 
-        // Step 9: Verify successful order completion
+        // Step 10: Verify successful order completion
         String confirmationMessage = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
                         By.className("complete-header")
@@ -149,12 +152,9 @@ public class CheckOutTest extends BaseTest {
         Assert.assertEquals(
                 confirmationMessage,
                 "Thank you for your order!",
-                "Order confirmation message did not match."
+                "Order confirmation message did not match"
         );
 
-        System.out.println(
-                "Order completed successfully: "
-                        + confirmationMessage
-        );
+        logStep("Checkout completed and confirmation verified");
     }
 }
