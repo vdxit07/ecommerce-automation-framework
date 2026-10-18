@@ -19,7 +19,6 @@ public class CartTest extends BaseTest {
                 Duration.ofSeconds(10)
         );
 
-        // Step 1: Log in
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("standard_user", "secret_sauce");
 
@@ -27,27 +26,20 @@ public class CartTest extends BaseTest {
                 ExpectedConditions.urlContains("inventory.html")
         );
 
-        // Step 2: Add the product
         wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.id("add-to-cart-sauce-labs-backpack")
                 )
         ).click();
 
-        // Step 3: Wait until the cart badge confirms the product was added
         String badgeCount = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
                         By.className("shopping_cart_badge")
                 )
         ).getText();
 
-        Assert.assertEquals(
-                badgeCount,
-                "1",
-                "Cart badge should display 1 after adding the product."
-        );
+        Assert.assertEquals(badgeCount, "1");
 
-        // Step 4: Open the cart
         CartPage cartPage = new CartPage(driver);
         cartPage.openCart();
 
@@ -55,7 +47,46 @@ public class CartTest extends BaseTest {
                 ExpectedConditions.urlContains("cart.html")
         );
 
-        // Step 5: Wait for the cart item and verify the count
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.className("cart_item")
+                )
+        );
+
+        Assert.assertEquals(cartPage.getCartItemCount(), 1);
+        Assert.assertEquals(cartPage.getCartBadgeCount(), "1");
+
+        System.out.println("Add product test passed.");
+    }
+
+    @Test
+    public void removeProductFromCartTest() {
+
+        WebDriverWait wait = new WebDriverWait(
+                driver,
+                Duration.ofSeconds(10)
+        );
+
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login("standard_user", "secret_sauce");
+
+        wait.until(
+                ExpectedConditions.urlContains("inventory.html")
+        );
+
+        wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.id("add-to-cart-sauce-labs-backpack")
+                )
+        ).click();
+
+        CartPage cartPage = new CartPage(driver);
+        cartPage.openCart();
+
+        wait.until(
+                ExpectedConditions.urlContains("cart.html")
+        );
+
         wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
                         By.className("cart_item")
@@ -65,17 +96,30 @@ public class CartTest extends BaseTest {
         Assert.assertEquals(
                 cartPage.getCartItemCount(),
                 1,
-                "Cart should contain one product."
+                "Cart should contain the backpack before removal."
+        );
+
+        cartPage.removeBackpackFromCart();
+
+        wait.until(
+                ExpectedConditions.invisibilityOfElementLocated(
+                        By.className("cart_item")
+                )
         );
 
         Assert.assertEquals(
-                cartPage.getCartBadgeCount(),
-                "1",
-                "Cart badge should display 1."
+                cartPage.getCartItemCount(),
+                0,
+                "Cart should be empty after removing the backpack."
         );
 
-        System.out.println(
-                "Cart test passed: one product is present."
+        Assert.assertTrue(
+                driver.findElements(
+                        By.className("shopping_cart_badge")
+                ).isEmpty(),
+                "Cart badge should disappear when the cart is empty."
         );
+
+        System.out.println("Remove product test passed.");
     }
 }
