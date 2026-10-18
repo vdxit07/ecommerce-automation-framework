@@ -1,7 +1,7 @@
-
 package com.vedansh.qa;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -53,20 +53,53 @@ public class CheckOutTest extends BaseTest {
                 )
         );
 
-        // Step 4: Enter customer details
-        wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
+        // Step 4: Enter customer details directly
+        WebElement firstNameInput = wait.until(
+                ExpectedConditions.elementToBeClickable(
                         By.id("first-name")
                 )
-        ).sendKeys("Vedansh");
+        );
+        firstNameInput.click();
+        firstNameInput.sendKeys("Vedansh");
 
-        driver.findElement(By.id("last-name"))
-                .sendKeys("Dixit");
+        WebElement lastNameInput = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.id("last-name")
+                )
+        );
+        lastNameInput.click();
+        lastNameInput.sendKeys("Dixit");
 
-        driver.findElement(By.id("postal-code"))
-                .sendKeys("160001");
+        WebElement postalCodeInput = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.id("postal-code")
+                )
+        );
+        postalCodeInput.click();
+        postalCodeInput.sendKeys("160001");
 
-        // Step 5: Continue to order overview
+        // Step 5: Verify the entered values
+        Assert.assertEquals(
+                firstNameInput.getDomProperty("value"),
+                "Vedansh",
+                "First name was not entered correctly."
+        );
+
+        Assert.assertEquals(
+                lastNameInput.getDomProperty("value"),
+                "Dixit",
+                "Last name was not entered correctly."
+        );
+
+        Assert.assertEquals(
+                postalCodeInput.getDomProperty("value"),
+                "160001",
+                "Postal code was not entered correctly."
+        );
+
+        System.out.println("All checkout fields populated correctly.");
+
+        // Step 6: Continue to order overview
         wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.id("continue")
@@ -79,7 +112,7 @@ public class CheckOutTest extends BaseTest {
                 )
         );
 
-        // Step 6: Verify the order overview
+        // Step 7: Verify the order overview
         Assert.assertEquals(
                 driver.findElements(By.className("cart_item")).size(),
                 1,
@@ -93,7 +126,7 @@ public class CheckOutTest extends BaseTest {
                 "Expected Sauce Labs Backpack in the order overview."
         );
 
-        // Step 7: Finish the order
+        // Step 8: Finish the order
         wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.id("finish")
@@ -106,7 +139,7 @@ public class CheckOutTest extends BaseTest {
                 )
         );
 
-        // Step 8: Verify successful order completion
+        // Step 9: Verify successful order completion
         String confirmationMessage = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
                         By.className("complete-header")
