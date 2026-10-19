@@ -1,5 +1,5 @@
-package com.vedansh.qa;
 
+package com.vedansh.qa;
 
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -23,31 +23,41 @@ public class LoginTest extends BaseTest {
                 new WebDriverWait(driver, Duration.ofSeconds(10));
 
         wait.until(ExpectedConditions.urlContains("inventory.html"));
-        ProductsPage productsPage = new ProductsPage(driver);
+
+        InventoryPage inventoryPage = new InventoryPage(driver);
+
         extentTest.info("Verifying Products page heading");
         Assert.assertEquals(
-                productsPage.getPageTitle(),
+                inventoryPage.getPageTitle(),
                 "Products",
                 "Products page heading should be displayed"
         );
+
         extentTest.info("Verifying successful login");
         String currentUrl = driver.getCurrentUrl();
 
-        Assert.assertNotNull(currentUrl, "Current URL should not be null");
+        Assert.assertNotNull(
+                currentUrl,
+                "Current URL should not be null"
+        );
+
         Assert.assertTrue(
                 currentUrl.contains("inventory.html"),
                 "User should be redirected to the inventory page"
         );
-
     }
+
     @Test
     public void invalidLoginTest() {
+
         LoginPage loginPage = new LoginPage(driver);
+
         extentTest.info("Attempting login with an invalid password");
         loginPage.login("standard_user", "wrong_password");
 
         extentTest.info("Verifying the login error message");
         String errorMessage = loginPage.getErrorMessage();
+
         Assert.assertTrue(
                 errorMessage.contains(
                         "Username and password do not match"

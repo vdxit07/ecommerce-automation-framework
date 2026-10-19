@@ -20,16 +20,23 @@ public class InventoryPage {
     private final By sortDropdown =
             By.className("product_sort_container");
 
+    private final By pageTitle =
+            By.className("title");
+
+    private final By productPrices =
+            By.className("inventory_item_price");
+
     public InventoryPage(WebDriver driver) {
         this.driver = driver;
         this.waitUtils = new WaitUtils(driver);
     }
 
-    public int getProductCount() {
-        waitUtils.waitForVisibility(
-                By.className("inventory_item")
-        );
+    public String getPageTitle() {
+        return waitUtils.waitForVisibility(pageTitle).getText();
+    }
 
+    public int getProductCount() {
+        waitUtils.waitForVisibility(inventoryItems);
         return driver.findElements(inventoryItems).size();
     }
 
@@ -40,6 +47,7 @@ public class InventoryPage {
         Select select = new Select(dropdown);
         select.selectByValue("lohi");
     }
+
     public void sortByPriceHighToLow() {
         WebElement dropdown =
                 waitUtils.waitForVisibility(sortDropdown);
@@ -47,11 +55,10 @@ public class InventoryPage {
         Select select = new Select(dropdown);
         select.selectByValue("hilo");
     }
+
     public List<Double> getProductPrices() {
         List<WebElement> priceElements =
-                driver.findElements(
-                        By.className("inventory_item_price")
-                );
+                driver.findElements(productPrices);
 
         List<Double> prices = new ArrayList<>();
 
