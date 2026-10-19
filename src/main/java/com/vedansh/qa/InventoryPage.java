@@ -72,4 +72,14 @@ public class InventoryPage {
 
         return prices;
     }
+    public void addBackpackToCart() {
+        By addBackpackButton =
+                By.id("add-to-cart-sauce-labs-backpack");
+
+        waitUtils.waitForClickability(addBackpackButton).click();
+    }
+
+    public boolean isInventoryPageDisplayed() {
+        return waitUtils.waitForVisibility(pageTitle).isDisplayed();
+    }
 }
