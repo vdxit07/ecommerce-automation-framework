@@ -31,4 +31,27 @@ public class PostsApiTest {
         System.out.println("API Status Code: " + response.getStatusCode());
         System.out.println("API Response: " + response.asPrettyString());
     }
+
+    @Test
+    public void verifyGetNonexistentPost() {
+
+        RestAssured.baseURI = "https://jsonplaceholder.typicode.com";
+
+        Response response =
+                given()
+                        .when()
+                        .get("/posts/999999")
+                        .then()
+                        .extract()
+                        .response();
+
+        Assert.assertEquals(response.getStatusCode(), 404);
+        Assert.assertEquals(response.asString().trim(), "{}");
+
+        System.out.println(
+                "Nonexistent Post API Status Code: "
+                        + response.getStatusCode()
+        );
+    }
+
 }
