@@ -1,122 +1,52 @@
 # E-Commerce Automation Framework
 
-A UI test automation framework built with **Java, Selenium WebDriver, TestNG, and Maven** to automate end-to-end testing of the SauceDemo e-commerce application.
+A Java-based test automation framework demonstrating UI automation, REST API testing, SQL database validation, test reporting, and CI/CD using GitHub Actions.
 
 ## Tech Stack
 
-- Java 21
-- Selenium WebDriver 4.41.0
-- TestNG 7.10
-- Maven
-- ExtentReports 5.1.2
-- Git and GitHub
-- GitHub Actions for CI
+- **Language:** Java
+- **Build Tool:** Maven
+- **UI Automation:** Selenium WebDriver
+- **Test Framework:** TestNG
+- **API Testing:** REST Assured
+- **Database:** MySQL, JDBC
+- **Reporting:** ExtentReports and TestNG/Surefire reports
+- **CI/CD:** GitHub Actions
+- **Version Control:** Git and GitHub
 
-## Application Under Test
+## Project Coverage
 
-[SauceDemo](https://www.saucedemo.com/)
+### 1. UI Automation
+- Valid and invalid login scenarios
+- Empty username and password validation
+- Locked-out user validation
+- Shopping cart add/remove functionality
+- Checkout workflow
 
-## Features
+### 2. REST API Testing
+- Retrieve a post using `GET /posts/1`
+- Validate response status and JSON fields
+- Verify a nonexistent post returns HTTP `404`
+- Configure connection and response timeouts
 
-- Page Object Model (POM) structure
-- Automated login testing
-- Positive and negative login scenarios
-- Add-to-cart validation
-- End-to-end checkout testing
-- Explicit waits for synchronization
-- Assertions to validate application behavior
-- HTML test reporting with ExtentReports
-- Automated test execution through GitHub Actions
+### 3. Database Testing
+- Connect to MySQL using JDBC
+- Validate product pricing in the database
+- Work with product and order tables
+- Configure database credentials through the `ECOMMERCE_DB_PASSWORD` environment variable
 
-## Project Structure
+### 4. Reporting
+- TestNG/Surefire test results
+- ExtentReports HTML report
+- Screenshot capture for failed UI tests
 
-```text
-ecommerce-automation-framework/
-├── .github/
-│   └── workflows/
-│       └── maven.yml
-├── src/
-│   ├── main/
-│   │   └── java/com/vedansh/qa/
-│   │       ├── LoginPage.java
-│   │       ├── ProductsPage.java
-│   │       ├── CartPage.java
-│   │       ├── CheckoutPage.java
-│   │       └── WaitUtils.java
-│   └── test/
-│       └── java/com/vedansh/qa/
-│           ├── BaseTest.java
-│           ├── LoginTest.java
-│           ├── CartTest.java
-│           └── CheckOutTest.java
-├── pom.xml
-└── README.md
-```
+### 5. CI/CD
+- GitHub Actions workflow triggered on pushes and pull requests to `main`
+- Java 17 environment
+- MySQL service for database tests
+- Automated Maven test execution
+- Report artifacts uploaded for download
 
 ## Prerequisites
 
-Install the following:
-
-- Java JDK 21
-- Apache Maven
-- Git
-- Google Chrome
-
-Verify Java and Maven:
-
-```bash
-java -version
-mvn -version
-```
-
-## How to Run Tests
-
-Clone the repository:
-
-```bash
-git clone https://github.com/vdxit07/ecommerce-automation-framework.git
-```
-
-Navigate to the project directory:
-
-```bash
-cd ecommerce-automation-framework
-```
-
-Run the test suite:
-
-```bash
-mvn clean test
-```
-
-## Test Coverage
-
-| Test Area | Validation |
-|---|---|
-| Login | Valid and invalid login scenarios |
-| Shopping Cart | Add a product and verify cart contents |
-| Checkout | Complete checkout and verify the order confirmation |
-
-## Test Reporting
-
-The framework uses ExtentReports to generate an HTML test report.
-
-After execution, check the project's `target` directory for the generated report. The exact report filename depends on the reporting configuration.
-
-## Continuous Integration
-
-GitHub Actions runs the Maven test workflow defined in:
-
-`.github/workflows/maven.yml`
-
-You can view workflow runs in the repository's **Actions** tab:
-
-https://github.com/vdxit07/ecommerce-automation-framework/actions
-
-## Repository
-
-https://github.com/vdxit07/ecommerce-automation-framework
-
-## Author
-
-Vedansh Dixit
+- JDK 17 or compatible newer JDK
