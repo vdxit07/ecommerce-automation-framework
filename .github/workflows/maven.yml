@@ -79,7 +79,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: selenium-test-reports
-          path: target/surefire-reports/
+          name: automation-test-reports
+          path: |
+            target/surefire-reports/
+            target/reports/
+            target/screenshots/
           if-no-files-found: warn
           retention-days: 14

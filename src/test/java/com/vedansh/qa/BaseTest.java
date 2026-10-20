@@ -84,56 +84,57 @@ public class BaseTest {
     public void tearDown(ITestResult result) {
 
         try {
-            if (result.getStatus() == ITestResult.SUCCESS) {
+            if (extentTest != null) {
 
-                extentTest.pass("Test passed");
+                if (result.getStatus() == ITestResult.SUCCESS) {
+                    extentTest.pass("Test passed");
 
-            } else if (result.getStatus() == ITestResult.FAILURE) {
+                } else if (result.getStatus() == ITestResult.FAILURE) {
+                    extentTest.fail("Test failed");
 
-                extentTest.fail("Test failed");
-
-                if (result.getThrowable() != null) {
-                    extentTest.fail(result.getThrowable());
-                }
-
-                if (driver != null) {
-                    try {
-                        String screenshotPath = takeScreenshot(
-                                result.getMethod().getMethodName()
-                        );
-
-                        extentTest.addScreenCaptureFromPath(
-                                Path.of(screenshotPath)
-                                        .toAbsolutePath()
-                                        .toString()
-                        );
-
-                    } catch (Exception e) {
-                        extentTest.warning(
-                                "Could not attach failure screenshot: "
-                                        + e.getMessage()
-                        );
+                    if (result.getThrowable() != null) {
+                        extentTest.fail(result.getThrowable());
                     }
+
+                    if (driver != null) {
+                        try {
+                            String screenshotPath = takeScreenshot(
+                                    result.getMethod().getMethodName()
+                            );
+
+                            extentTest.addScreenCaptureFromPath(
+                                    Path.of(screenshotPath)
+                                            .toAbsolutePath()
+                                            .toString()
+                            );
+
+                        } catch (Exception e) {
+                            extentTest.warning(
+                                    "Could not attach failure screenshot: "
+                                            + e.getMessage()
+                            );
+                        }
+                    }
+
+                } else if (result.getStatus() == ITestResult.SKIP) {
+                    extentTest.skip("Test skipped");
                 }
-
-            } else if (result.getStatus() == ITestResult.SKIP) {
-
-                extentTest.skip("Test skipped");
             }
 
         } finally {
 
-            if (driver != null) {
-                if (result.getStatus() != ITestResult.FAILURE) {
+            try {
+                if (driver != null) {
                     driver.quit();
-                } else {
-                    System.out.println(
-                            "TEST FAILED - Chrome left open for inspection."
-                    );
                 }
+            } catch (Exception e) {
+                System.err.println(
+                        "Could not close browser: " + e.getMessage()
+                );
+            } finally {
+                extent.flush();
             }
-
-            extent.flush();
         }
     }
+
 }
