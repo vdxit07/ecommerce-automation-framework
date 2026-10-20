@@ -11,6 +11,23 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.ECOMMERCE_DB_PASSWORD }}
+          MYSQL_DATABASE: ecommerce_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      ECOMMERCE_DB_PASSWORD: ${{ secrets.ECOMMERCE_DB_PASSWORD }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,6 +38,39 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
+
+      - name: Initialize test database
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-client
+          mysql -h 127.0.0.1 -uroot -p"$ECOMMERCE_DB_PASSWORD" ecommerce_test <<'SQL'
+          CREATE TABLE products (
+              product_id INT PRIMARY KEY,
+              product_name VARCHAR(100) NOT NULL,
+              price DECIMAL(10,2) NOT NULL,
+              stock_quantity INT NOT NULL
+          );
+
+          CREATE TABLE orders (
+              order_id INT PRIMARY KEY,
+              customer_name VARCHAR(100) NOT NULL,
+              product_id INT NOT NULL,
+              quantity INT NOT NULL,
+              total_amount DECIMAL(10,2) NOT NULL,
+              order_status VARCHAR(30) NOT NULL,
+              FOREIGN KEY (product_id) REFERENCES products(product_id)
+          );
+
+          INSERT INTO products VALUES
+              (101, 'Laptop', 55000.00, 10),
+              (102, 'Mouse', 750.00, 50),
+              (103, 'Keyboard', 1500.00, 25);
+
+          INSERT INTO orders VALUES
+              (1001, 'Customer A', 101, 1, 55000.00, 'Completed'),
+              (1002, 'Customer B', 102, 2, 1500.00, 'Completed'),
+              (1003, 'Customer C', 103, 1, 1500.00, 'Pending');
+          SQL
 
       - name: Run Selenium tests
         run: mvn -B test
